@@ -20,9 +20,6 @@ import zombies.entities.Person;
 
 public class MovePeople implements Action<Entity> {
 
-	private static final int HEALTHY_SIGHT_RANGE = 100;
-	private static final int INFECTED_SIGHT_RANGE = 50;
-
 	static int bounded(final int value, final int min, final int max) {
 		return value < min ? min : value > max ? max : value;
 	}
@@ -122,7 +119,6 @@ public class MovePeople implements Action<Entity> {
 					// Original
 						final Point pos = person.getPosition();
 						final int size = Person.SIZE;
-						final Random rand = ThreadLocalRandom.current();
 
 						double moveDist = person.getSpeed();
 						double moveAngle = person.getAngle();

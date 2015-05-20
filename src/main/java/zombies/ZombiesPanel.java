@@ -6,13 +6,10 @@ import jalse.attributes.Attributes;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Random;
@@ -60,7 +57,7 @@ public class ZombiesPanel extends JPanel implements ActionListener,
 		setBackground(BACKGROUND_COLOR);
 		// Listener for key events
 		setFocusable(true);
-		addKeyListener(this);
+		;
 		addMouseListener(this);
 		// Start ticking and rendering (30 FPS)
 		new Timer(1000 / 30, this).start();
@@ -78,11 +75,11 @@ public class ZombiesPanel extends JPanel implements ActionListener,
 		// Create field
 		final Field field = jalse.newEntity(Field.ID, Field.class);
 		field.setSize(new Dimension(WIDTH, HEIGHT));
-		field.scheduleForActor(new MovePeople(), 0, 1000 / 60,
+		field.scheduleForActor(new MovePeople(), 0, 1000 / 30,
 				TimeUnit.MILLISECONDS);
 		field.addEntityListener(new Infect());
 
-		// Create healtyh people
+		// Create healthy people
 		for (int i = 0; i < 100; i++) {
 			final Person person = field.newEntity(UUID.randomUUID(),
 					Person.class);

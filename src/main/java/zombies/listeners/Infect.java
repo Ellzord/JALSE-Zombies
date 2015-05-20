@@ -12,6 +12,7 @@ import zombies.entities.Corpse;
 import zombies.entities.Healthy;
 import zombies.entities.Infected;
 import zombies.entities.Person;
+import jalse.entities.Entity;
 import jalse.listeners.EntityEvent;
 import jalse.listeners.EntityListener;
 
@@ -26,15 +27,25 @@ public class Infect implements EntityListener {
 	public void entityMarkedAsType(EntityEvent event) {
 		Person person = event.getEntity().asType(Person.class);
 		final String directionMethod;
+		final Class<? extends Entity> type = event.getTypeChange();
+
+		try {
+			person.setColor((Color) type.getDeclaredField("COLOR").get(null));
+			person.setSpeed((double) type.getDeclaredField("SPEED").get(null));
+			person.setSightRange((int) type.getDeclaredField("SIGHT_RANGE")
+					.get(null));
+		} catch (IllegalArgumentException | IllegalAccessException
+				| NoSuchFieldException | SecurityException e1) {
+			System.err.println("Problem getting fields for type "
+					+ String.valueOf(type));
+			;
+		}
 
 		if (event.getTypeChange() == Healthy.class) {
 			person.unmarkAsType(Carrier.class);
 			person.unmarkAsType(Infected.class);
 			person.unmarkAsType(Corpse.class);
 			person.cancelAllScheduledForActor();
-			person.setColor(Healthy.COLOR);
-			person.setSpeed(Healthy.SPEED);
-			person.setSightRange(Healthy.SIGHT_RANGE);
 			directionMethod = "directionHealthy";
 		} else if (event.getTypeChange() == Carrier.class) {
 			person.unmarkAsType(Healthy.class);
@@ -43,7 +54,6 @@ public class Infect implements EntityListener {
 			person.cancelAllScheduledForActor();
 			person.scheduleForActor(new GetSick(), 1000 / 30, 1000 / 30,
 					TimeUnit.MILLISECONDS);
-			person.setSpeed(Healthy.SPEED);
 			directionMethod = "directionCarrier";
 		} else if (event.getTypeChange() == Infected.class) {
 			person.unmarkAsType(Healthy.class);
@@ -52,16 +62,11 @@ public class Infect implements EntityListener {
 			person.cancelAllScheduledForActor();
 			person.scheduleForActor(new Starve(), 1000 / 30, 1000 / 30,
 					TimeUnit.MILLISECONDS);
-			person.setColor(Infected.COLOR);
-			person.setSpeed(Infected.SPEED);
-			person.setSightRange(Infected.SIGHT_RANGE);
 			directionMethod = "directionInfected";
 		} else if (event.getTypeChange() == Corpse.class) {
 			person.unmarkAsType(Healthy.class);
 			person.unmarkAsType(Carrier.class);
 			person.unmarkAsType(Infected.class);
-			person.setColor(Corpse.COLOR);
-			person.setSpeed(0.0);
 			directionMethod = "directionCarrier";
 		} else {
 			directionMethod = "directionCarrier";
