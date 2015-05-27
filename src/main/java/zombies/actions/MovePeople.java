@@ -50,6 +50,7 @@ public class MovePeople implements Action<Entity> {
 	}
 
 	public static Double directionHealthy(Person person, Stream<Person> people) {
+		// A healthy person moves away from the nearest infected person they see
 		double moveAngle = person.getAngle();
 		Point personPos = person.getPosition();
 		Optional<Person> closestInfected = getClosestPersonOfType(person,
@@ -74,6 +75,7 @@ public class MovePeople implements Action<Entity> {
 	}
 
 	public static Double directionInfected(Person person, Stream<Person> people) {
+		// An infected person moves toward the nearest healthy person they see
 		double moveAngle = person.getAngle();
 		Point personPos = person.getPosition();
 		Optional<Person> closestHealthy = getClosestPersonOfType(person,
@@ -101,6 +103,7 @@ public class MovePeople implements Action<Entity> {
 	}
 
 	public static Double directionCarrier(Person person, Stream<Person> people) {
+		// A carrier moves randomly
 		final Random rand = ThreadLocalRandom.current();
 		final double moveAngle = person.getAngle() + 2.
 				* (rand.nextDouble() - 0.5);
@@ -120,15 +123,16 @@ public class MovePeople implements Action<Entity> {
 						final Point pos = person.getPosition();
 						final int size = Person.SIZE;
 
+						// Move r = speed
 						double moveDist = person.getSpeed();
 						double moveAngle = person.getAngle();
 						try {
+							// Move theta = apply appropriate method above
 							moveAngle = (Double) person.getDirectionMethod()
 									.invoke(person,
 											new Object[] { person,
 													field.streamPeople() });
 						} catch (Exception e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						person.setAngle(moveAngle);

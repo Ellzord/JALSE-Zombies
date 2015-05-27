@@ -1,6 +1,8 @@
 package zombies.listeners;
 
 import java.awt.Color;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -17,12 +19,24 @@ import jalse.entities.EntityTypeEvent;
 import jalse.entities.EntityTypeListener;
 
 public class Infect implements EntityTypeListener {
+	private static List<Class<? extends Entity>> types = Arrays.asList(
+			Healthy.class, Carrier.class, Infected.class, Corpse.class);
+
 	@Override
 	public void entityMarkedAsType(EntityTypeEvent event) {
 		Person person = event.getEntity().asType(Person.class);
 		final String directionMethod;
 		final Class<? extends Entity> type = event.getTypeChange();
 
+		// Clear out any other type and cancel any scheduled actions
+		for (Class<? extends Entity> t : types) {
+			if (person.isMarkedAsType(t) && t != type) {
+				person.unmarkAsType(t);
+			}
+		}
+		person.cancelAllScheduledForActor();
+
+		// Set the person's constants
 		try {
 			person.setColor((Color) type.getDeclaredField("COLOR").get(null));
 			person.setSpeed((double) type.getDeclaredField("SPEED").get(null));
@@ -34,32 +48,18 @@ public class Infect implements EntityTypeListener {
 					+ String.valueOf(type));
 		}
 
-		if (event.getTypeChange() == Healthy.class) {
-			person.unmarkAsType(Carrier.class);
-			person.unmarkAsType(Infected.class);
-			person.unmarkAsType(Corpse.class);
-			person.cancelAllScheduledForActor();
+		// Set the direction method to use, and schedule actions if necessary
+		if (type == Healthy.class) {
 			directionMethod = "directionHealthy";
-		} else if (event.getTypeChange() == Carrier.class) {
-			person.unmarkAsType(Healthy.class);
-			person.unmarkAsType(Infected.class);
-			person.unmarkAsType(Corpse.class);
-			person.cancelAllScheduledForActor();
+		} else if (type == Carrier.class) {
 			person.scheduleForActor(new GetSick(), 1000 / 30, 1000 / 30,
 					TimeUnit.MILLISECONDS);
 			directionMethod = "directionCarrier";
-		} else if (event.getTypeChange() == Infected.class) {
-			person.unmarkAsType(Healthy.class);
-			person.unmarkAsType(Carrier.class);
-			person.unmarkAsType(Corpse.class);
-			person.cancelAllScheduledForActor();
+		} else if (type == Infected.class) {
 			person.scheduleForActor(new Starve(), 1000 / 30, 1000 / 30,
 					TimeUnit.MILLISECONDS);
 			directionMethod = "directionInfected";
-		} else if (event.getTypeChange() == Corpse.class) {
-			person.unmarkAsType(Healthy.class);
-			person.unmarkAsType(Carrier.class);
-			person.unmarkAsType(Infected.class);
+		} else if (type == Corpse.class) {
 			directionMethod = "directionCarrier";
 		} else {
 			directionMethod = "directionCarrier";

@@ -19,6 +19,7 @@ public class InfectionFractionListener implements AttributeListener<Double> {
 			return;
 		}
 
+		// Gradually transition from "healthy" to "infected" color
 		float r = (float) ((Healthy.COLOR.getRed() * (1. - infectionFraction) + Infected.COLOR
 				.getRed() * infectionFraction) / 255.);
 		float g = (float) ((Healthy.COLOR.getGreen() * (1. - infectionFraction) + Infected.COLOR

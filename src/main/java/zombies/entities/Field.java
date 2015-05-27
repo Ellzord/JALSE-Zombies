@@ -12,10 +12,10 @@ import jalse.entities.annotations.StreamEntities;
 public interface Field extends Entity {
 	UUID ID = UUID.randomUUID();
 
-	@GetAttribute(name = "size")
+	@GetAttribute
 	Dimension getSize();
 
-	@SetAttribute(name = "size")
+	@SetAttribute
 	void setSize(Dimension size);
 
 	@StreamEntities

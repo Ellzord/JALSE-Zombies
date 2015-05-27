@@ -14,6 +14,7 @@ public class Starve implements Action<Entity> {
 			throws InterruptedException {
 		Person person = context.getActor().asType(Person.class);
 
+		// Infected slowly starve to death after biting
 		hungerFraction += 1. / 30 / Person.STARVE_TIME_SECONDS;
 
 		if (hungerFraction >= 1.0) {

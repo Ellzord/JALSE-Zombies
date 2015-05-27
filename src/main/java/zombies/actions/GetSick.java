@@ -14,6 +14,7 @@ public class GetSick implements Action<Entity> {
 			throws InterruptedException {
 		Person person = context.getActor().asType(Person.class);
 
+		// Increase infection fraction a bit
 		infectionFraction += 1. / 30 / Person.INFECTION_TIME_SECONDS;
 		person.setAttribute("infectionFraction", Attributes.DOUBLE_TYPE,
 				infectionFraction);

@@ -35,6 +35,7 @@ public class ZombiesPanel extends JPanel implements ActionListener,
 
 	public static final int WIDTH = 700;
 	public static final int HEIGHT = 500;
+	public static final int COUNT = 100;
 
 	private static void drawElement(final Graphics g, final Person person) {
 		final Point position = person.getPosition();
@@ -42,7 +43,6 @@ public class ZombiesPanel extends JPanel implements ActionListener,
 		g.setColor(person.getColor());
 		g.fillOval(position.x, position.y, size, size);
 		g.setColor(BACKGROUND_COLOR);
-		// g.fillRect(position.x, position.y, size.width, size.height);
 	}
 
 	private final JALSE jalse;
@@ -58,7 +58,6 @@ public class ZombiesPanel extends JPanel implements ActionListener,
 		setBackground(BACKGROUND_COLOR);
 		// Listener for key events
 		setFocusable(true);
-		;
 		addMouseListener(this);
 		// Start ticking and rendering (30 FPS)
 		new Timer(1000 / 30, this).start();
@@ -79,8 +78,8 @@ public class ZombiesPanel extends JPanel implements ActionListener,
 		field.scheduleForActor(new MovePeople(), 0, 1000 / 30,
 				TimeUnit.MILLISECONDS);
 
-		// Create healthy people
-		for (int i = 0; i < 100; i++) {
+		// Create randomly-placed healthy people
+		for (int i = 0; i < COUNT; i++) {
 			final Person person = field.newEntity(UUID.randomUUID(),
 					Person.class);
 			person.addEntityTypeListener(new Infect());
