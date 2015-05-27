@@ -5,8 +5,8 @@ import zombies.entities.Healthy;
 import zombies.entities.Infected;
 import zombies.entities.Person;
 import jalse.entities.Entity;
-import jalse.listeners.AttributeEvent;
-import jalse.listeners.AttributeListener;
+import jalse.attributes.AttributeEvent;
+import jalse.attributes.AttributeListener;
 
 public class InfectionFractionListener implements AttributeListener<Double> {
 	@Override

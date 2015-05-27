@@ -17,39 +17,39 @@ public interface Person extends Entity {
 	static final double STARVE_TIME_SECONDS = 10;
 	static final int SIZE = 16;
 
-	@GetAttribute("angle")
+	@GetAttribute(name = "angle")
 	Double getAngle();
 
-	@GetAttribute("color")
+	@GetAttribute(name = "color")
 	Color getColor();
 
-	@GetAttribute("directionMethod")
+	@GetAttribute(name = "directionMethod")
 	Method getDirectionMethod();
 
-	@GetAttribute("position")
+	@GetAttribute(name = "position")
 	Point getPosition();
 
-	@GetAttribute("sightRange")
+	@GetAttribute(name = "sightRange")
 	Integer getSightRange();
 
-	@GetAttribute("speed")
+	@GetAttribute
 	Double getSpeed();
 
-	@SetAttribute("angle")
+	@SetAttribute(name = "angle")
 	void setAngle(Double angle);
 
-	@SetAttribute("color")
+	@SetAttribute(name = "color")
 	void setColor(Color color);
 
-	@SetAttribute("directionMethod")
+	@SetAttribute(name = "directionMethod")
 	void setDirectionMethod(Method method);
 
-	@SetAttribute("position")
+	@SetAttribute(name = "position")
 	void setPosition(Point position);
 
-	@SetAttribute("sightRange")
+	@SetAttribute(name = "sightRange")
 	void setSightRange(Integer range);
 
-	@SetAttribute("speed")
+	@SetAttribute(name = "speed")
 	void setSpeed(Double speed);
 }

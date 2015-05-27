@@ -16,6 +16,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -77,12 +78,12 @@ public class ZombiesPanel extends JPanel implements ActionListener,
 		field.setSize(new Dimension(WIDTH, HEIGHT));
 		field.scheduleForActor(new MovePeople(), 0, 1000 / 30,
 				TimeUnit.MILLISECONDS);
-		field.addEntityListener(new Infect());
 
 		// Create healthy people
 		for (int i = 0; i < 100; i++) {
 			final Person person = field.newEntity(UUID.randomUUID(),
 					Person.class);
+			person.addEntityTypeListener(new Infect());
 			person.setPosition(randomPosition());
 			person.setAngle(randomAngle());
 			person.markAsType(Healthy.class);

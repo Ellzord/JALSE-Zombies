@@ -13,18 +13,12 @@ import zombies.entities.Healthy;
 import zombies.entities.Infected;
 import zombies.entities.Person;
 import jalse.entities.Entity;
-import jalse.listeners.EntityEvent;
-import jalse.listeners.EntityListener;
+import jalse.entities.EntityTypeEvent;
+import jalse.entities.EntityTypeListener;
 
-public class Infect implements EntityListener {
+public class Infect implements EntityTypeListener {
 	@Override
-	public void entityKilled(EntityEvent event) {
-		Person person = event.getEntity().asType(Person.class);
-		person.setColor(Color.LIGHT_GRAY);
-	}
-
-	@Override
-	public void entityMarkedAsType(EntityEvent event) {
+	public void entityMarkedAsType(EntityTypeEvent event) {
 		Person person = event.getEntity().asType(Person.class);
 		final String directionMethod;
 		final Class<? extends Entity> type = event.getTypeChange();
@@ -38,7 +32,6 @@ public class Infect implements EntityListener {
 				| NoSuchFieldException | SecurityException e1) {
 			System.err.println("Problem getting fields for type "
 					+ String.valueOf(type));
-			;
 		}
 
 		if (event.getTypeChange() == Healthy.class) {
