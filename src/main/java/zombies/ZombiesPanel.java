@@ -40,8 +40,10 @@ public class ZombiesPanel extends JPanel implements ActionListener,
 	private static void drawElement(final Graphics g, final Person person) {
 		final Point position = person.getPosition();
 		final int size = Person.SIZE;
+		g.setColor(Color.BLACK);
+		g.fillOval(position.x-size/2-2, position.y-size/2-2, size+4, size+4);
 		g.setColor(person.getColor());
-		g.fillOval(position.x, position.y, size, size);
+		g.fillOval(position.x-size/2, position.y-size/2, size, size);
 		g.setColor(BACKGROUND_COLOR);
 	}
 
