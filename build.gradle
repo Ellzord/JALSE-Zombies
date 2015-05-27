@@ -1,0 +1,14 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+apply plugin: 'application'
+
+mainClassName = 'zombies.Zombies'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.github.ellzord:JALSE:1.0.7'
+}
