@@ -1,5 +1,6 @@
 package zombies.actions;
 
+import zombies.PersonProperties;
 import zombies.entities.Person;
 import jalse.actions.Action;
 import jalse.actions.ActionContext;
@@ -15,7 +16,7 @@ public class GetSick implements Action<Entity> {
 		Person person = context.getActor().asType(Person.class);
 
 		// Increase infection fraction a bit
-		infectionFraction += 1. / 30 / Person.INFECTION_TIME_SECONDS;
+		infectionFraction += 1. / 30 / PersonProperties.INFECTION_TIME_SECONDS;
 		person.setAttribute("infectionFraction", Attributes.DOUBLE_TYPE,
 				infectionFraction);
 	}

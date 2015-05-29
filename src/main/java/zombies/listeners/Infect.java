@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
+import zombies.PersonProperties;
 import zombies.actions.GetSick;
 import zombies.actions.MovePeople;
 import zombies.actions.Starve;
@@ -38,10 +39,14 @@ public class Infect implements EntityTypeListener {
 
 		// Set the person's constants
 		try {
-			person.setColor((Color) type.getDeclaredField("COLOR").get(null));
-			person.setSpeed((double) type.getDeclaredField("SPEED").get(null));
-			person.setSightRange((int) type.getDeclaredField("SIGHT_RANGE")
-					.get(null));
+			Class<? extends PersonProperties.Properties> properties = PersonProperties
+					.getPropertiesForType(type);
+			person.setColor((Color) properties.getDeclaredField("COLOR").get(
+					null));
+			person.setSpeed((double) properties.getDeclaredField("SPEED").get(
+					null));
+			person.setSightRange((int) properties.getDeclaredField(
+					"SIGHT_RANGE").get(null));
 		} catch (IllegalArgumentException | IllegalAccessException
 				| NoSuchFieldException | SecurityException e1) {
 			System.err.println("Problem getting fields for type "

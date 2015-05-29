@@ -11,7 +11,9 @@ public class Zombies {
 		final JFrame frame = new JFrame("JALSE-Zombies");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
-		frame.add(new ZombiesPanel(), BorderLayout.CENTER);
+		ZombiesPanel zombiesPanel = new ZombiesPanel();
+		frame.add(zombiesPanel, BorderLayout.CENTER);
+		frame.add(new ControlPanel(zombiesPanel), BorderLayout.EAST);
 		frame.pack();
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);

@@ -11,6 +11,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import zombies.PersonProperties;
 import zombies.ZombiesPanel;
 import zombies.entities.Corpse;
 import zombies.entities.Field;
@@ -89,9 +90,9 @@ public class MovePeople implements Action<Entity> {
 			if (dx * dx + dy * dy < person.getSightRange()
 					* person.getSightRange()) {
 				moveAngle = Math.atan2(dy, dx);
-				if (dx * dx + dy * dy < Person.SIZE * Person.SIZE) {
+				if (dx * dx + dy * dy < PersonProperties.SIZE
+						* PersonProperties.SIZE) {
 					person.asType(Infected.class).bite(closestHealthy.get());
-					;
 				}
 			}
 		}
@@ -121,7 +122,7 @@ public class MovePeople implements Action<Entity> {
 				.forEach(person -> {
 					// Original
 						final Point pos = person.getPosition();
-						final int size = Person.SIZE;
+						final int size = PersonProperties.SIZE;
 
 						// Move r = speed
 						double moveDist = person.getSpeed();
