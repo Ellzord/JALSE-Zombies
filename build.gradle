@@ -10,5 +10,5 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.ellzord:JALSE:1.0.7'
+    compile 'com.github.ellzord:JALSE:1.0.8'
 }
