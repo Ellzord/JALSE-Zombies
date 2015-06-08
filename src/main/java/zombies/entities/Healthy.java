@@ -1,4 +1,3 @@
 package zombies.entities;
 
-public interface Healthy extends Person {
-}
+public interface Healthy extends Person {}

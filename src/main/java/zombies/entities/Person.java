@@ -1,47 +1,48 @@
 package zombies.entities;
 
-import java.awt.Color;
-import java.awt.Point;
-import java.lang.reflect.Method;
-
 import jalse.entities.Entity;
 import jalse.entities.annotations.GetAttribute;
 import jalse.entities.annotations.SetAttribute;
 
+import java.awt.Color;
+import java.awt.Point;
+import java.lang.reflect.Method;
+
 public interface Person extends Entity {
-	@GetAttribute
-	Double getAngle();
 
-	@GetAttribute
-	Color getColor();
+    @GetAttribute
+    Double getAngle();
 
-	@GetAttribute
-	Method getDirectionMethod();
+    @GetAttribute
+    Color getColor();
 
-	@GetAttribute
-	Point getPosition();
+    @GetAttribute
+    Method getDirectionMethod();
 
-	@GetAttribute
-	Integer getSightRange();
+    @GetAttribute
+    Point getPosition();
 
-	@GetAttribute
-	Double getSpeed();
+    @GetAttribute
+    Integer getSightRange();
 
-	@SetAttribute
-	void setAngle(Double angle);
+    @GetAttribute
+    Double getSpeed();
 
-	@SetAttribute
-	void setColor(Color color);
+    @SetAttribute
+    void setAngle(Double angle);
 
-	@SetAttribute
-	void setDirectionMethod(Method method);
+    @SetAttribute
+    void setColor(Color color);
 
-	@SetAttribute
-	void setPosition(Point position);
+    @SetAttribute
+    void setDirectionMethod(Method method);
 
-	@SetAttribute
-	void setSightRange(Integer range);
+    @SetAttribute
+    void setPosition(Point position);
 
-	@SetAttribute
-	void setSpeed(Double speed);
+    @SetAttribute
+    void setSightRange(Integer range);
+
+    @SetAttribute
+    void setSpeed(Double speed);
 }

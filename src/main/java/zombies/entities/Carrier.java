@@ -1,4 +1,3 @@
 package zombies.entities;
 
-public interface Carrier extends Person {
-}
+public interface Carrier extends Person {}
