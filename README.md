@@ -24,7 +24,7 @@ Various properties of the simulation can be adjusted using the sliders on the ri
 * **Starvation Time (s.)**: How long it an `Infected` person can go between bites without starving.
 
 ### Screenshot
-![Zombies screenshot](screenshot.png)
+![Zombies screen capture](screencapture.gif)
 
 ### More
 See the [Wiki](https://github.com/Ellzord/JALSE/wiki) for more information.
