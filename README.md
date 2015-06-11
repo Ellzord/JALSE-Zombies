@@ -23,7 +23,7 @@ Various properties of the simulation can be adjusted using the sliders on the ri
 * **Infection Time (s.)**: How long it takes a person to transition from `Healthy` to `Infected`.  Nominally in seconds, but may be longer depending on performance.
 * **Starvation Time (s.)**: How long it an `Infected` person can go between bites without starving.
 
-### Screenshot
+### Screen capture
 ![Zombies screen capture](screencapture.gif)
 
 ### More
