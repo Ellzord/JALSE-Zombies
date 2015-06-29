@@ -1,15 +1,14 @@
 package zombies.listeners;
 
-import jalse.entities.Entity;
-import jalse.entities.EntityTypeEvent;
-import jalse.entities.EntityTypeListener;
-
 import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
+import jalse.entities.Entity;
+import jalse.entities.EntityTypeEvent;
+import jalse.entities.EntityTypeListener;
 import zombies.PersonProperties;
 import zombies.actions.GetSick;
 import zombies.actions.MovePeople;

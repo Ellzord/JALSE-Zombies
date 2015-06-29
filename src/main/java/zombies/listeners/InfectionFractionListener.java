@@ -1,11 +1,10 @@
 package zombies.listeners;
 
+import java.awt.Color;
+
 import jalse.attributes.AttributeEvent;
 import jalse.attributes.AttributeListener;
 import jalse.entities.Entity;
-
-import java.awt.Color;
-
 import zombies.PersonProperties;
 import zombies.entities.Infected;
 import zombies.entities.Person;
@@ -23,12 +22,12 @@ public class InfectionFractionListener implements AttributeListener<Double> {
 	}
 
 	// Gradually transition from "healthy" to "infected" color
-	final float r = (float) ((PersonProperties.Healthy.COLOR.getRed() * (1. - infectionFraction) + PersonProperties.Infected.COLOR
-		.getRed() * infectionFraction) / 255.);
-	final float g = (float) ((PersonProperties.Healthy.COLOR.getGreen() * (1. - infectionFraction) + PersonProperties.Infected.COLOR
-		.getGreen() * infectionFraction) / 255.);
-	final float b = (float) ((PersonProperties.Healthy.COLOR.getBlue() * (1. - infectionFraction) + PersonProperties.Infected.COLOR
-		.getBlue() * infectionFraction) / 255.);
+	final float r = (float) ((PersonProperties.Healthy.COLOR.getRed() * (1. - infectionFraction)
+		+ PersonProperties.Infected.COLOR.getRed() * infectionFraction) / 255.);
+	final float g = (float) ((PersonProperties.Healthy.COLOR.getGreen() * (1. - infectionFraction)
+		+ PersonProperties.Infected.COLOR.getGreen() * infectionFraction) / 255.);
+	final float b = (float) ((PersonProperties.Healthy.COLOR.getBlue() * (1. - infectionFraction)
+		+ PersonProperties.Infected.COLOR.getBlue() * infectionFraction) / 255.);
 
 	person.setColor(new Color(r, g, b));
     }

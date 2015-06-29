@@ -1,9 +1,5 @@
 package zombies;
 
-import static jalse.JALSEBuilder.buildManualJALSE;
-import jalse.JALSE;
-import jalse.attributes.Attributes;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -21,6 +17,9 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import jalse.DefaultJALSE;
+import jalse.JALSE;
+import jalse.attributes.Attributes;
 import zombies.actions.MovePeople;
 import zombies.entities.Corpse;
 import zombies.entities.Field;
@@ -54,7 +53,7 @@ public class ZombiesPanel extends JPanel implements ActionListener, MouseListene
 
     public ZombiesPanel() {
 	// Manually ticked JALSE
-	jalse = buildManualJALSE();
+	jalse = new DefaultJALSE.Builder().setManualEngine().build();
 	// Create data model
 	createEntities();
 	// Size to field size
@@ -105,13 +104,11 @@ public class ZombiesPanel extends JPanel implements ActionListener, MouseListene
     public void mouseClicked(final MouseEvent e) {
 	// Infect clicked person(s)
 	final Point point = e.getPoint();
-	getField()
-		.streamPeople()
-		.filter(p -> {
-		    final Point pos = p.getPosition();
-		    return (pos.x - point.x) * (pos.x - point.x) + (pos.y - point.y) * (pos.y - point.y) < PersonProperties.SIZE
-			    * PersonProperties.SIZE;
-		}).forEach(p -> p.markAsType(Infected.class));
+	getField().streamPeople().filter(p -> {
+	    final Point pos = p.getPosition();
+	    return (pos.x - point.x) * (pos.x - point.x) + (pos.y - point.y) * (pos.y - point.y) < PersonProperties.SIZE
+		    * PersonProperties.SIZE;
+	}).forEach(p -> p.markAsType(Infected.class));
     }
 
     @Override
@@ -151,8 +148,8 @@ public class ZombiesPanel extends JPanel implements ActionListener, MouseListene
 
     private Point randomPosition() {
 	final Random rand = ThreadLocalRandom.current();
-	return new Point(PersonProperties.SIZE + rand.nextInt(WIDTH - 20), PersonProperties.SIZE
-		+ rand.nextInt(HEIGHT - 20));
+	return new Point(PersonProperties.SIZE + rand.nextInt(WIDTH - 20),
+		PersonProperties.SIZE + rand.nextInt(HEIGHT - 20));
     }
 
     private void removeRandomPerson(final Field field) {

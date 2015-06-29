@@ -1,8 +1,8 @@
 package zombies;
 
-import jalse.entities.Entity;
-
 import java.awt.Color;
+
+import jalse.entities.Entity;
 
 public class PersonProperties {
 

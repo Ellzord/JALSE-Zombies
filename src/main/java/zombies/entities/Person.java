@@ -1,12 +1,12 @@
 package zombies.entities;
 
-import jalse.entities.Entity;
-import jalse.entities.annotations.GetAttribute;
-import jalse.entities.annotations.SetAttribute;
-
 import java.awt.Color;
 import java.awt.Point;
 import java.lang.reflect.Method;
+
+import jalse.entities.Entity;
+import jalse.entities.annotations.GetAttribute;
+import jalse.entities.annotations.SetAttribute;
 
 public interface Person extends Entity {
 

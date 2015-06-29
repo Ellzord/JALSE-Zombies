@@ -1,9 +1,5 @@
 package zombies.actions;
 
-import jalse.actions.Action;
-import jalse.actions.ActionContext;
-import jalse.entities.Entity;
-
 import java.awt.Point;
 import java.util.Optional;
 import java.util.Random;
@@ -11,6 +7,9 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import jalse.actions.Action;
+import jalse.actions.ActionContext;
+import jalse.entities.Entity;
 import zombies.PersonProperties;
 import zombies.ZombiesPanel;
 import zombies.entities.Corpse;
@@ -85,57 +84,52 @@ public class MovePeople implements Action<Entity> {
 	    final Class<? extends Entity> type) {
 	final Point personPos = person.getPosition();
 	final Integer sightRange = person.getSightRange();
-	return people
-		.filter(p -> !p.equals(person))
-		.filter(p -> p.isMarkedAsType(type))
+	return people.filter(p -> !p.equals(person)).filter(p -> p.isMarkedAsType(type))
 		.filter(p -> Math.abs(p.getPosition().x - personPos.x) <= sightRange)
 		.filter(p -> Math.abs(p.getPosition().y - personPos.y) <= sightRange)
-		.collect(
-			Collectors.minBy((a, b) -> {
-			    final Point aPos = a.getPosition();
-			    final Point bPos = b.getPosition();
-			    final int d1 = (aPos.x - personPos.x) * (aPos.x - personPos.x) + (aPos.y - personPos.y)
-				    * (aPos.y - personPos.y);
-			    final int d2 = (bPos.x - personPos.x) * (bPos.x - personPos.x) + (bPos.y - personPos.y)
-				    * (bPos.y - personPos.y);
-			    return d1 - d2;
-			}));
+		.collect(Collectors.minBy((a, b) -> {
+		    final Point aPos = a.getPosition();
+		    final Point bPos = b.getPosition();
+		    final int d1 = (aPos.x - personPos.x) * (aPos.x - personPos.x)
+			    + (aPos.y - personPos.y) * (aPos.y - personPos.y);
+		    final int d2 = (bPos.x - personPos.x) * (bPos.x - personPos.x)
+			    + (bPos.y - personPos.y) * (bPos.y - personPos.y);
+		    return d1 - d2;
+		}));
     }
 
     @Override
     public void perform(final ActionContext<Entity> context) throws InterruptedException {
 	final Field field = context.getActor().asType(Field.class);
 
-	field.streamPeople()
-		.filter(p -> !p.isMarkedAsType(Corpse.class))
-		.forEach(person -> {
-		    // Original
-			final Point pos = person.getPosition();
-			final int size = PersonProperties.SIZE;
+	field.streamPeople().filter(p -> !p.isMarkedAsType(Corpse.class)).forEach(person -> {
+	    // Original
+	    final Point pos = person.getPosition();
+	    final int size = PersonProperties.SIZE;
 
-			// Move r = speed
-			final double moveDist = person.getSpeed();
-			double moveAngle = person.getAngle();
-			try {
-			    // Move theta = apply appropriate method above
-			    moveAngle = (Double) person.getDirectionMethod().invoke(person,
-				    new Object[] { person, field.streamPeople() });
-			} catch (final Exception e) {
-			    e.printStackTrace();
-			}
-			person.setAngle(moveAngle);
+	    // Move r = speed
+	    final double moveDist = person.getSpeed();
+	    double moveAngle = person.getAngle();
+	    try {
+		// Move theta = apply appropriate method above
+		moveAngle = (Double) person.getDirectionMethod().invoke(person,
+			new Object[] { person, field.streamPeople() });
+	    } catch (final Exception e) {
+		e.printStackTrace();
+	    }
+	    person.setAngle(moveAngle);
 
-			final Point moveDelta = new Point((int) (moveDist * Math.cos(moveAngle)),
-				(int) (moveDist * Math.sin(moveAngle)));
+	    final Point moveDelta = new Point((int) (moveDist * Math.cos(moveAngle)),
+		    (int) (moveDist * Math.sin(moveAngle)));
 
-			// Calculate bounded x & y
-			final int x = bounded(pos.x + moveDelta.x, 0, ZombiesPanel.WIDTH - size);
-			final int y = bounded(pos.y + moveDelta.y, 0, ZombiesPanel.HEIGHT - size);
+	    // Calculate bounded x & y
+	    final int x = bounded(pos.x + moveDelta.x, 0, ZombiesPanel.WIDTH - size);
+	    final int y = bounded(pos.y + moveDelta.y, 0, ZombiesPanel.HEIGHT - size);
 
-			if (pos.x != x || pos.y != y) {
-			    // Update if changed
-			    person.setPosition(new Point(x, y));
-			}
-		    });
+	    if (pos.x != x || pos.y != y) {
+		// Update if changed
+		person.setPosition(new Point(x, y));
+	    }
+	});
     }
 }
