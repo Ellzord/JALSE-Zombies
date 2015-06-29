@@ -3,6 +3,7 @@ package zombies.actions;
 import java.awt.Point;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -10,8 +11,9 @@ import java.util.stream.Stream;
 import jalse.actions.Action;
 import jalse.actions.ActionContext;
 import jalse.entities.Entity;
-import zombies.PersonProperties;
 import zombies.ZombiesPanel;
+import zombies.ZombiesProperties;
+import zombies.entities.Carrier;
 import zombies.entities.Corpse;
 import zombies.entities.Field;
 import zombies.entities.Healthy;
@@ -68,7 +70,8 @@ public class MovePeople implements Action<Entity> {
 
 	    if (dx * dx + dy * dy < person.getSightRange() * person.getSightRange()) {
 		moveAngle = Math.atan2(dy, dx);
-		if (dx * dx + dy * dy < PersonProperties.SIZE * PersonProperties.SIZE) {
+		final int size = ZombiesProperties.getSize();
+		if (dx * dx + dy * dy < size * size) {
 		    person.asType(Infected.class).bite(closestHealthy.get());
 		}
 	    }
@@ -101,22 +104,24 @@ public class MovePeople implements Action<Entity> {
     @Override
     public void perform(final ActionContext<Entity> context) throws InterruptedException {
 	final Field field = context.getActor().asType(Field.class);
-
-	field.streamPeople().filter(p -> !p.isMarkedAsType(Corpse.class)).forEach(person -> {
+	final Set<Person> people = field.getEntitiesOfType(Person.class);
+	people.stream().filter(p -> !p.isMarkedAsType(Corpse.class)).forEach(person -> {
 	    // Original
 	    final Point pos = person.getPosition();
-	    final int size = PersonProperties.SIZE;
+	    final int size = ZombiesProperties.getSize();
 
 	    // Move r = speed
 	    final double moveDist = person.getSpeed();
 	    double moveAngle = person.getAngle();
-	    try {
-		// Move theta = apply appropriate method above
-		moveAngle = (Double) person.getDirectionMethod().invoke(person,
-			new Object[] { person, field.streamPeople() });
-	    } catch (final Exception e) {
-		e.printStackTrace();
+
+	    if (person.isMarkedAsType(Infected.class)) {
+		moveAngle = MovePeople.directionInfected(person, people.stream());
+	    } else if (person.isMarkedAsType(Carrier.class)) {
+		moveAngle = MovePeople.directionCarrier(person, people.stream());
+	    } else {
+		moveAngle = MovePeople.directionHealthy(person, people.stream());
 	    }
+
 	    person.setAngle(moveAngle);
 
 	    final Point moveDelta = new Point((int) (moveDist * Math.cos(moveAngle)),

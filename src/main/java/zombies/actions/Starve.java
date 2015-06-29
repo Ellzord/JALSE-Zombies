@@ -3,7 +3,7 @@ package zombies.actions;
 import jalse.actions.Action;
 import jalse.actions.ActionContext;
 import jalse.entities.Entity;
-import zombies.PersonProperties;
+import zombies.ZombiesProperties;
 import zombies.entities.Corpse;
 import zombies.entities.Person;
 
@@ -16,7 +16,7 @@ public class Starve implements Action<Entity> {
 	final Person person = context.getActor().asType(Person.class);
 
 	// Infected slowly starve to death after biting
-	hungerFraction += 1. / 30 / PersonProperties.STARVE_TIME_SECONDS;
+	hungerFraction += 1. / 30 / ZombiesProperties.getStarveTime();
 
 	if (hungerFraction >= 1.0) {
 	    person.markAsType(Corpse.class);

@@ -4,7 +4,7 @@ import jalse.actions.Action;
 import jalse.actions.ActionContext;
 import jalse.attributes.Attributes;
 import jalse.entities.Entity;
-import zombies.PersonProperties;
+import zombies.ZombiesProperties;
 import zombies.entities.Person;
 
 public class GetSick implements Action<Entity> {
@@ -16,7 +16,7 @@ public class GetSick implements Action<Entity> {
 	final Person person = context.getActor().asType(Person.class);
 
 	// Increase infection fraction a bit
-	infectionFraction += 1. / 30 / PersonProperties.INFECTION_TIME_SECONDS;
+	infectionFraction += 1. / 30 / ZombiesProperties.getInfectionTime();
 	person.setAttribute("infectionFraction", Attributes.DOUBLE_TYPE, infectionFraction);
     }
 }
