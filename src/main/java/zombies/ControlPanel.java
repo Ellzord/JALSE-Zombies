@@ -1,6 +1,7 @@
 package zombies;
 
 import java.awt.Component;
+import java.util.EventObject;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -33,13 +34,17 @@ public class ControlPanel extends JPanel {
 	return slider;
     }
 
+    private static int sliderValue(final EventObject e) {
+	return ((JSlider) e.getSource()).getValue();
+    }
+
     public ControlPanel(final ZombiesPanel zombiesPanel) {
 	setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
 	// Population
 	add(newLabel("Population"));
 	add(newSlider(0, 200, 50, ZombiesProperties.getPopulation(), e -> {
-	    ZombiesProperties.setPopulation(((JSlider) e.getSource()).getValue());
+	    ZombiesProperties.setPopulation(sliderValue(e));
 	    zombiesPanel.adjustPopulation();
 	}));
 	add(Box.createVerticalGlue());
@@ -49,7 +54,7 @@ public class ControlPanel extends JPanel {
 	add(newSlider(50, 200, 50,
 		(int) (100 * ZombiesProperties.getSpeed(Infected.class) / ZombiesProperties.getSpeed(Healthy.class)),
 		e -> {
-		    ZombiesProperties.setInfectedRelativeSpeed(((JSlider) e.getSource()).getValue());
+		    ZombiesProperties.setInfectedRelativeSpeed(sliderValue(e));
 		    zombiesPanel.adjustInfectedSpeed();
 		}));
 	add(Box.createVerticalGlue());
@@ -57,7 +62,7 @@ public class ControlPanel extends JPanel {
 	// Healthy sight
 	add(newLabel("Healthy Sight Range"));
 	add(newSlider(0, 200, 50, ZombiesProperties.getSightRange(Healthy.class), e -> {
-	    ZombiesProperties.setHealthySightRange(((JSlider) e.getSource()).getValue());
+	    ZombiesProperties.setHealthySightRange(sliderValue(e));
 	    zombiesPanel.adjustSightRange(Healthy.class);
 	}));
 	add(Box.createVerticalGlue());
@@ -65,23 +70,21 @@ public class ControlPanel extends JPanel {
 	// Infected sight
 	add(newLabel("Infected Sight Range"));
 	add(newSlider(0, 200, 50, ZombiesProperties.getSightRange(Infected.class), e -> {
-	    ZombiesProperties.setInfectedSightRange(((JSlider) e.getSource()).getValue());
+	    ZombiesProperties.setInfectedSightRange(sliderValue(e));
 	    zombiesPanel.adjustSightRange(Infected.class);
 	}));
 	add(Box.createVerticalGlue());
 
 	// Infection time
 	add(newLabel("Infection Time (s.)"));
-	add(newSlider(0, 30, 5, (int) ZombiesProperties.getInfectionTime(), e -> {
-	    ZombiesProperties.setInfectionTime(((JSlider) e.getSource()).getValue());
-	}));
+	add(newSlider(0, 30, 5, (int) ZombiesProperties.getInfectionTime(),
+		e -> ZombiesProperties.setInfectionTime(sliderValue(e))));
 	add(Box.createVerticalGlue());
 
 	// Starvation time
 	add(newLabel("Starvation Time (s.)"));
-	add(newSlider(0, 30, 5, (int) ZombiesProperties.getStarveTime(), e -> {
-	    ZombiesProperties.setStarveTime(((JSlider) e.getSource()).getValue());
-	}));
+	add(newSlider(0, 30, 5, (int) ZombiesProperties.getStarveTime(),
+		e -> ZombiesProperties.setStarveTime(sliderValue(e))));
 	add(Box.createVerticalGlue());
 
 	// Reset

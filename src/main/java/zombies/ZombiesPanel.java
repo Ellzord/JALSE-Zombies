@@ -18,28 +18,34 @@ import javax.swing.Timer;
 
 import jalse.DefaultJALSE;
 import jalse.JALSE;
-import jalse.attributes.Attributes;
+import jalse.entities.Entities;
+import jalse.entities.Entity;
 import zombies.actions.MovePeople;
-import zombies.entities.Corpse;
+import zombies.attributes.InfectionListener;
+import zombies.attributes.StarvationListener;
+import zombies.entities.Carrier;
 import zombies.entities.Field;
 import zombies.entities.Healthy;
 import zombies.entities.Infected;
 import zombies.entities.Person;
-import zombies.listeners.Infect;
-import zombies.listeners.InfectionFractionListener;
+import zombies.entities.TransformationListener;
 
 @SuppressWarnings("serial")
 public class ZombiesPanel extends JPanel implements ActionListener, MouseListener {
 
+    public static final int TICK_INTERVAL = 1000 / 30;
+
     public static final int WIDTH = 700;
     public static final int HEIGHT = 500;
+
+    private static final int OUTLINE = 2;
 
     private static void drawElement(final Graphics g, final Person person) {
 	final Point position = person.getPosition();
 	final int size = ZombiesProperties.getSize();
-	g.setColor(Color.GRAY);
-	g.fillOval(position.x - 2, position.y - 2, size + 4, size + 4);
-	g.setColor(person.getColor());
+	g.setColor(Color.BLACK);
+	g.fillOval(position.x - OUTLINE, position.y - OUTLINE, size + OUTLINE * 2, size + OUTLINE * 2);
+	g.setColor(person.getColour());
 	g.fillOval(position.x, position.y, size, size);
     }
 
@@ -58,7 +64,7 @@ public class ZombiesPanel extends JPanel implements ActionListener, MouseListene
 	setFocusable(true);
 	addMouseListener(this);
 	// Start ticking and rendering (30 FPS)
-	new Timer(1000 / 30, this).start();
+	new Timer(TICK_INTERVAL, this).start();
     }
 
     @Override
@@ -71,10 +77,11 @@ public class ZombiesPanel extends JPanel implements ActionListener, MouseListene
 
     private void addPersonAtRandomPosition() {
 	final Person person = getField().newEntity(Person.class);
-	person.addEntityTypeListener(new Infect());
 	person.setPosition(randomPosition());
 	person.setAngle(randomAngle());
-	person.addAttributeListener("infectionFraction", Attributes.DOUBLE_TYPE, new InfectionFractionListener());
+	person.addAttributeListener(Carrier.INFECTION_PERCENTAGE_TYPE, new InfectionListener());
+	person.addAttributeListener(Infected.HUNGER_PERCENTAGE_TYPE, new StarvationListener());
+	person.addEntityTypeListener(new TransformationListener());
 	person.markAsType(Healthy.class);
     }
 
@@ -107,7 +114,7 @@ public class ZombiesPanel extends JPanel implements ActionListener, MouseListene
 	// Create field
 	final Field field = jalse.newEntity(Field.ID, Field.class);
 	field.setSize(new Dimension(WIDTH, HEIGHT));
-	field.scheduleForActor(new MovePeople(), 0, 1000 / 30, TimeUnit.MILLISECONDS);
+	field.scheduleForActor(new MovePeople(), 0, TICK_INTERVAL, TimeUnit.MILLISECONDS);
 
 	// Create randomly-placed healthy people
 	reset();
@@ -124,7 +131,8 @@ public class ZombiesPanel extends JPanel implements ActionListener, MouseListene
 	final int size = ZombiesProperties.getSize();
 	getField().streamPeople().filter(p -> {
 	    final Point pos = p.getPosition();
-	    return (pos.x - point.x) * (pos.x - point.x) + (pos.y - point.y) * (pos.y - point.y) < size * size;
+	    return pos.x - OUTLINE <= point.x && pos.x + size + OUTLINE >= point.x && pos.y - OUTLINE <= point.y
+		    && pos.y + size + OUTLINE >= point.y;
 	}).forEach(p -> p.markAsType(Infected.class));
     }
 
@@ -160,24 +168,11 @@ public class ZombiesPanel extends JPanel implements ActionListener, MouseListene
     private Point randomPosition() {
 	final int size = ZombiesProperties.getSize();
 	final Random rand = ThreadLocalRandom.current();
-	return new Point(size + rand.nextInt(WIDTH - 20), size + rand.nextInt(HEIGHT - 20));
+	return new Point(size + rand.nextInt(WIDTH), size + rand.nextInt(HEIGHT));
     }
 
     private void removeRandomPerson() {
-	final Field field = getField(); // TODO
-	final Random rand = ThreadLocalRandom.current();
-
-	// Try to remove a non-corpse first
-	int currentCount = (int) field.streamEntities().filter(p -> !p.isMarkedAsType(Corpse.class)).count();
-	if (currentCount > 0) {
-	    final int randIndex = rand.nextInt(currentCount);
-	    field.streamEntities().filter(p -> !p.isMarkedAsType(Corpse.class)).skip(randIndex).findFirst().get()
-		    .kill();
-	} else {
-	    currentCount = (int) field.streamEntities().count();
-	    final int randIndex = rand.nextInt(currentCount);
-	    field.streamEntities().skip(randIndex).findFirst().get().kill();
-	}
+	Entities.randomEntity(getField()).ifPresent(Entity::kill);
     }
 
     public void reset() {

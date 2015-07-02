@@ -4,22 +4,16 @@ import jalse.actions.Action;
 import jalse.actions.ActionContext;
 import jalse.entities.Entity;
 import zombies.ZombiesProperties;
-import zombies.entities.Corpse;
-import zombies.entities.Person;
+import zombies.entities.Infected;
 
 public class Starve implements Action<Entity> {
 
-    private double hungerFraction = 0.0;
-
     @Override
     public void perform(final ActionContext<Entity> context) throws InterruptedException {
-	final Person person = context.getActor().asType(Person.class);
+	final Infected infected = context.getActor().asType(Infected.class);
 
 	// Infected slowly starve to death after biting
-	hungerFraction += 1. / 30 / ZombiesProperties.getStarveTime();
-
-	if (hungerFraction >= 1.0) {
-	    person.markAsType(Corpse.class);
-	}
+	final double hunger = infected.getHungerPercentage() + 1. / 30 / ZombiesProperties.getStarveTime();
+	infected.setHungerPercentage(hunger);
     }
 }

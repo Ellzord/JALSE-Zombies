@@ -13,7 +13,7 @@ public interface Person extends Entity {
     double getAngle();
 
     @GetAttribute
-    Color getColor();
+    Color getColour();
 
     @GetAttribute
     Point getPosition();
@@ -28,7 +28,7 @@ public interface Person extends Entity {
     void setAngle(double angle);
 
     @SetAttribute
-    void setColor(Color color);
+    void setColour(Color colour);
 
     @SetAttribute
     void setPosition(Point position);

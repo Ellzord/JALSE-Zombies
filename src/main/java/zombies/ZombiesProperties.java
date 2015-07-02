@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
+import jalse.entities.Entity;
 import zombies.entities.Carrier;
 import zombies.entities.Corpse;
 import zombies.entities.Healthy;
@@ -45,7 +46,7 @@ public class ZombiesProperties {
 	props.put(Corpse.class, new PersonProperties(Color.DARK_GRAY, 0, 0.0));
     }
 
-    public static Color getColour(final Class<? extends Person> type) {
+    public static Color getColour(final Class<? extends Entity> type) {
 	return props.get(type).colour.get();
     }
 
@@ -57,7 +58,7 @@ public class ZombiesProperties {
 	return population.get();
     }
 
-    public static int getSightRange(final Class<? extends Person> type) {
+    public static int getSightRange(final Class<? extends Entity> type) {
 	return props.get(type).sightRange.get();
     }
 
@@ -65,7 +66,7 @@ public class ZombiesProperties {
 	return SIZE;
     }
 
-    public static double getSpeed(final Class<? extends Person> type) {
+    public static double getSpeed(final Class<? extends Entity> type) {
 	return Double.longBitsToDouble(props.get(type).speed.get());
     }
 
