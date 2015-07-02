@@ -6,7 +6,6 @@ import static jalse.misc.Identifiable.not;
 
 import java.awt.Point;
 import java.util.Optional;
-import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -30,76 +29,65 @@ public class MovePeople implements Action<Entity> {
     }
 
     public static Double directionAwayFromInfected(final Person person, final Set<Person> people) {
-	// A healthy person moves away from the nearest infected person they see
-	double moveAngle = person.getAngle();
+	// Find closest infected to hide from
 	final Optional<Person> closestInfected = getClosestPersonOfType(person, people, Infected.class);
 
-	boolean infectedVisible = false;
-	if (closestInfected.isPresent()) {
-	    final Point personPos = person.getPosition();
-	    final Point closestPos = closestInfected.get().getPosition();
-
-	    // Distance
-	    final int dx = personPos.x - closestPos.x;
-	    final int dy = personPos.y - closestPos.y;
-
-	    if (dx * dx + dy * dy < person.getSightRange() * person.getSightRange()) {
-		moveAngle = Math.atan2(dy, dx);
-		infectedVisible = true;
-	    }
+	// Cannot see any
+	if (!closestInfected.isPresent()) {
+	    return randomDirection(person);
 	}
-	if (!infectedVisible) {
-	    final Random rand = ThreadLocalRandom.current();
-	    moveAngle += 2. * (rand.nextDouble() - 0.5);
-	}
-	return moveAngle;
+
+	final Point personPos = person.getPosition();
+	final Point closestPos = closestInfected.get().getPosition();
+
+	// Away
+	final int dx = personPos.x - closestPos.x;
+	final int dy = personPos.y - closestPos.y;
+
+	// Convert
+	return Math.atan2(dy, dx);
     }
 
     private static Double directionToHealthyAndBite(final Person person, final Set<Person> people) {
-	// An infected person moves toward the nearest healthy person they see
-	double moveAngle = person.getAngle();
+	// Find closest healthy person in sight
 	final Optional<Person> closestHealthy = getClosestPersonOfType(person, people, Healthy.class);
 
-	boolean healthyVisible = false;
-	// Healthy found
-	if (closestHealthy.isPresent()) {
-	    final Person healthy = closestHealthy.get();
-
-	    // Calculate distance
-	    final Point personPos = person.getPosition();
-	    final int dx = healthy.getPosition().x - personPos.x;
-	    final int dy = healthy.getPosition().y - personPos.y;
-
-	    // Check in sight
-	    if (dx * dx + dy * dy < person.getSightRange() * person.getSightRange()) {
-		moveAngle = Math.atan2(dy, dx);
-		final int size = ZombiesProperties.getSize();
-		if (dx * dx + dy * dy < size * size) {
-		    // Bite
-		    person.asType(Infected.class).bite(healthy);
-		    healthyVisible = true;
-		}
-	    }
+	// Check can see any
+	if (!closestHealthy.isPresent()) {
+	    return randomDirection(person);
 	}
 
-	// Look for healthy
-	if (!healthyVisible) {
-	    final Random rand = ThreadLocalRandom.current();
-	    moveAngle += 2. * (rand.nextDouble() - 0.5);
+	// Healthy person
+	final Person healthy = closestHealthy.get();
+
+	// Towards
+	final Point personPos = person.getPosition();
+	final int dx = healthy.getPosition().x - personPos.x;
+	final int dy = healthy.getPosition().y - personPos.y;
+
+	// Check in range of biting
+	final int size = ZombiesProperties.getSize();
+	if (dx * dx + dy * dy < size * size) {
+	    person.asType(Infected.class).bite(healthy);
 	}
-	return moveAngle;
+
+	// Convert
+	return Math.atan2(dy, dx);
     }
 
     private static Optional<Person> getClosestPersonOfType(final Person person, final Set<Person> people,
 	    final Class<? extends Entity> type) {
 	final Point personPos = person.getPosition();
 	final Integer sightRange = person.getSightRange();
+	// Stream other entities of type
 	return people.stream().filter(not(person)).filter(isMarkedAsType(type)).filter(p -> {
 	    final Point pPos = p.getPosition();
+	    // Within range
 	    return Math.abs(pPos.x - personPos.x) <= sightRange && Math.abs(pPos.y - personPos.y) <= sightRange;
 	}).collect(Collectors.minBy((a, b) -> {
 	    final Point aPos = a.getPosition();
 	    final Point bPos = b.getPosition();
+	    // Closest person
 	    final int d1 = (aPos.x - personPos.x) * (aPos.x - personPos.x)
 		    + (aPos.y - personPos.y) * (aPos.y - personPos.y);
 	    final int d2 = (bPos.x - personPos.x) * (bPos.x - personPos.x)
