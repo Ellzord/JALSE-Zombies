@@ -17,6 +17,12 @@ import zombies.entities.Person;
 
 public class InfectionListener implements AttributeListener<Double> {
 
+    public static void infectPerson(final Person p) {
+	p.cancelAllScheduledForActor();
+	p.markAsType(Infected.class);
+	p.scheduleForActor(new Starve(), TICK_INTERVAL, TICK_INTERVAL, TimeUnit.MILLISECONDS);
+    }
+
     @Override
     public void attributeAdded(final AttributeEvent<Double> event) {
 	final Person person = ((Entity) event.getContainer()).asType(Person.class);
@@ -24,10 +30,8 @@ public class InfectionListener implements AttributeListener<Double> {
 
 	// Check infected
 	if (infection >= 1.0) {
-	    person.cancelAllScheduledForActor();
 	    person.unmarkAsType(Carrier.class);
-	    person.markAsType(Infected.class);
-	    person.scheduleForActor(new Starve(), TICK_INTERVAL, TICK_INTERVAL, TimeUnit.MILLISECONDS);
+	    infectPerson(person);
 	    return;
 	}
 

@@ -38,13 +38,11 @@ public class ZombiesPanel extends JPanel implements ActionListener, MouseListene
     public static final int WIDTH = 700;
     public static final int HEIGHT = 500;
 
-    private static final int OUTLINE = 2;
-
     private static void drawElement(final Graphics g, final Person person) {
 	final Point position = person.getPosition();
 	final int size = ZombiesProperties.getSize();
 	g.setColor(Color.BLACK);
-	g.fillOval(position.x - OUTLINE, position.y - OUTLINE, size + OUTLINE * 2, size + OUTLINE * 2);
+	g.fillOval(position.x - 2, position.y - 2, size + 4, size + 4);
 	g.setColor(person.getColour());
 	g.fillOval(position.x, position.y, size, size);
     }
@@ -131,9 +129,14 @@ public class ZombiesPanel extends JPanel implements ActionListener, MouseListene
 	final int size = ZombiesProperties.getSize();
 	getField().streamPeople().filter(p -> {
 	    final Point pos = p.getPosition();
-	    return pos.x - OUTLINE <= point.x && pos.x + size + OUTLINE >= point.x && pos.y - OUTLINE <= point.y
-		    && pos.y + size + OUTLINE >= point.y;
-	}).forEach(p -> p.markAsType(Infected.class));
+	    return pos.x - 5 <= point.x && pos.x + size + 5 >= point.x && pos.y - 5 <= point.y
+		    && pos.y + size + 5 >= point.y;
+	}).forEach(p -> {
+	    // Infect if not infected already
+	    if (p.unmarkAsType(Healthy.class) || p.unmarkAsType(Carrier.class)) {
+		InfectionListener.infectPerson(p);
+	    }
+	});
     }
 
     @Override
