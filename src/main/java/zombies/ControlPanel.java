@@ -28,7 +28,7 @@ public class ControlPanel extends JPanel {
 	    final ChangeListener listener) {
 	final JSlider slider = new JSlider(min, max, initial);
 	slider.setMajorTickSpacing(ticks);
-	slider.setPaintTicks(true);
+	slider.setPaintLabels(true);
 	slider.setAlignmentX(Component.CENTER_ALIGNMENT);
 	slider.addChangeListener(listener);
 	return slider;
